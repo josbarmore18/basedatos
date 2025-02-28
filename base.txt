@@ -1,0 +1,34 @@
+CREATE PROCEDURE InsertCurrency
+    @nombre VARCHAR(50),
+    @simbolo VARCHAR(10),
+    @tasa DECIMAL(18,6),
+    @pais VARCHAR(50),
+    @codigo_iso VARCHAR(10)
+AS
+BEGIN
+    DECLARE @v_nombre VARCHAR(50);
+    DECLARE @v_simbolo VARCHAR(10);
+    DECLARE @v_tasa DECIMAL(18,6);
+    DECLARE @v_pais VARCHAR(50);
+    DECLARE @v_codigo_iso VARCHAR(10);
+
+    -- Asignar valores a las variables
+    SET @v_nombre = @nombre;
+    SET @v_tasa = @tasa;
+    SET @v_pais = @pais;
+    SET @v_codigo_iso = @codigo_iso;
+    
+    -- Bloque CASE para asignar el símbolo según el nombre de la moneda
+    SET @v_simbolo = CASE 
+        WHEN @v_nombre = 'Dólar Estadounidense' THEN '$'
+        WHEN @v_nombre = 'Euro' THEN '€'
+        WHEN @v_nombre = 'Libra Esterlina' THEN '£'
+        WHEN @v_nombre = 'Yen Japonés' THEN '¥'
+        WHEN @v_nombre = 'Peso Mexicano' THEN 'MX$'
+        ELSE @simbolo
+    END;
+    
+    -- Insertar en la tabla currencies
+    INSERT INTO currencies (nombre, simbolo, tasa, pais, codigo_iso)
+    VALUES (@v_nombre, @v_simbolo, @v_tasa, @v_pais, @v_codigo_iso);
+END;
