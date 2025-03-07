@@ -1,0 +1,35 @@
+DELIMITER //
+
+CREATE PROCEDURE SimuladorAhorro(
+    IN p_monto DECIMAL(10,2),
+    IN p_meses INT
+)
+BEGIN
+    DECLARE v_mes INT DEFAULT 1;
+    DECLARE v_saldo_acumulado DECIMAL(10,2) DEFAULT 0;
+    
+    -- Crear tabla temporal para almacenar los resultados
+    CREATE TEMPORARY TABLE IF NOT EXISTS ResultadoAhorro (
+        Mes INT,
+        Monto DECIMAL(10,2),
+        Saldo_Acumulado DECIMAL(10,2)
+    );
+    
+    -- Limpiar datos previos en la tabla temporal
+    TRUNCATE TABLE ResultadoAhorro;
+    
+    -- Calcular el ahorro mes a mes
+    WHILE v_mes <= p_meses DO
+        SET v_saldo_acumulado = v_saldo_acumulado + p_monto;
+        
+        INSERT INTO ResultadoAhorro (Mes, Monto, Saldo_Acumulado)
+        VALUES (v_mes, p_monto, v_saldo_acumulado);
+        
+        SET v_mes = v_mes + 1;
+    END WHILE;
+    
+    -- Mostrar los resultados
+    SELECT * FROM ResultadoAhorro;
+END //
+
+DELIMITER ;
